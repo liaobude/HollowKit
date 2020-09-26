@@ -28,6 +28,12 @@ class LinkageScrollLayout @JvmOverloads constructor(
         super.onLayout(changed, left, top, right, bottom)
     }
 
+    override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
+        // 为了能够将滚动传递下去，需要把 fling 拦截下来
+        fling(velocityX, velocityY)
+        return true
+    }
+
     override fun handleDispatchTouchEvent(e: MotionEvent): Boolean? {
         // down 时需要把之前可能的 fling 停掉，这里通过分发一个 down 事件解决
         if (e.action == MotionEvent.ACTION_DOWN) {
@@ -56,7 +62,15 @@ class LinkageScrollLayout @JvmOverloads constructor(
     }
 
     override fun handleScrollSelf(scroll: Int, type: Int): Boolean? {
-        // 自己可以滚动，优先默认处理
+        // 拦截了 fling 后，就需要在自己滚动时进行分发
+        // fling 的滚动优先分发给触发嵌套滚动的 nestedScrollTarget
+        if (type == ViewCompat.TYPE_NON_TOUCH
+            && isChildTotalShowing()
+            && nestedScrollTarget?.canScrollVertically(scroll) == true) {
+            nestedScrollTarget?.scrollBy(0, scroll)
+            return true
+        }
+        // 自己可以滚动时，默认处理
         if (type != ViewCompat.TYPE_NON_TOUCH || canScrollVertically(scroll)) {
             return null
         }

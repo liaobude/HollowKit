@@ -493,7 +493,7 @@ abstract class BehavioralScrollView @JvmOverloads constructor(
     // endregion
 
     // region scroll animation
-    private fun fling(vx: Float, vy: Float) {
+    protected fun fling(vx: Float, vy: Float) {
         log("fling $vx $vy")
         state = ScrollState.FLING
         lastX = 0F
@@ -551,9 +551,9 @@ abstract class BehavioralScrollView @JvmOverloads constructor(
 
     /**
      * 分发来自自身 touch 事件或 fling 的滚动量
-     * -> dispatchNestedPreScroll
-     * -> handleScrollSelf
-     * -> dispatchNestedScroll
+     * -> [dispatchNestedPreScrollInternal]
+     * -> [dispatchScrollSelf]
+     * -> [dispatchNestedScrollInternal]
      */
     private fun dispatchScrollInternal(dx: Int, dy: Int, type: Int) {
         log("dispatchScrollInternal: type=$type, x=$dx, y=$dy")

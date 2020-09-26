@@ -1,9 +1,11 @@
 package com.funnywolf.hollowkit.utils
 
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.funnywolf.hollowkit.R
 import kotlin.math.round
 import kotlin.random.Random
@@ -57,4 +59,47 @@ fun RecyclerView.simpleInit(count: Int = 30, color: Int = defaultHolderBackgroun
     layoutManager = LinearLayoutManager(context)
     adapter = SimpleAdapter(getRandomStrings(count))
         .addHolderInfo(createSimpleStringHolderInfo(color))
+}
+
+class Picture(val res: Int)
+val pictList = listOf(
+    Picture(R.drawable.bing0),
+    Picture(R.drawable.bing1),
+    Picture(R.drawable.bing2),
+    Picture(R.drawable.bing3),
+    Picture(R.drawable.bing4),
+    Picture(R.drawable.bing5),
+    Picture(R.drawable.bing6),
+    Picture(R.drawable.bing7),
+    Picture(R.drawable.bing8),
+    Picture(R.drawable.bing9),
+    Picture(R.drawable.bing10),
+    Picture(R.drawable.bing11),
+    Picture(R.drawable.bing12),
+    Picture(R.drawable.bing13),
+    Picture(R.drawable.bing14),
+    Picture(R.drawable.bing15),
+    Picture(R.drawable.bing16),
+    Picture(R.drawable.bing17),
+    Picture(R.drawable.bing18),
+    Picture(R.drawable.bing19)
+)
+
+val pictInfo = HolderInfo(
+    Picture::class.java,
+    R.layout.holder_picture,
+    onCreate = {
+        it.find(R.id.image_view)?.setRoundRect(10.dp.toFloat())
+        it.find(R.id.image_view)?.setOnClickListener { v ->
+            v.context.toast("Click picture ${it.data?.res}")
+        }
+    }, onBind = { h, p ->
+        h.v<ImageView>(R.id.image_view)?.load(p.res)
+    }
+)
+
+fun RecyclerView.initPictures() {
+    layoutManager = LinearLayoutManager(context)
+    adapter = SimpleAdapter(ArrayList(pictList))
+        .addHolderInfo(pictInfo)
 }
